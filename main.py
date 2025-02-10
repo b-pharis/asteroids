@@ -63,9 +63,10 @@ def main():
                     powerup = Powerup.spawn_powerup(ast.position.x, ast.position.y)
                     if powerup:
                         powerups.add(Powerup.spawn_powerup(ast.position.x, ast.position.y))
-                        
+
         for power in powerups:
             if power.collision(player):
+                player.decrease_cooldown(0.01)
                 power.kill()
 
         for obj in drawable:

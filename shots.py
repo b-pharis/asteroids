@@ -14,7 +14,7 @@ class Shot(CircleShape):
     def update(self, dt):
         self.position += self.velocity * dt
 
-        # Wrap around the screen edges
+        # removes bullets after they leave screen
         if self.position.x < -self.radius:  # Off left edge
             self.kill()
 
@@ -26,3 +26,4 @@ class Shot(CircleShape):
 
         elif self.position.y > SCREEN_HEIGHT + self.radius:  # Off bottom edge
             self.kill()
+    

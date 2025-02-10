@@ -34,7 +34,7 @@ class Powerup(pygame.sprite.Sprite):
     def spawn_powerup(x, y, color=(255, 0, 0), count=10):
         """Static method to generate a list of particles at a given position."""
         powerup_chance = random.randint(0, 100)
-        if powerup_chance < 60:
+        if powerup_chance < 10:
             return [Powerup(x, y, color) for _ in range(count)]
         return []
     

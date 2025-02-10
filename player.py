@@ -8,6 +8,9 @@ class Player(CircleShape):
         super().__init__(x, y, PLAYER_RADIUS)
         self.rotation = 0
         self.timer = 0
+        self.shoot_cooldown = PLAYER_SHOOT_COOLDOWN
+        self.default_cooldown = PLAYER_SHOOT_COOLDOWN
+        self.powerup_timer = 0
 
     def draw(self, screen):
         pygame.draw.polygon(screen, "white", self.triangle(), 2) 
@@ -25,7 +28,13 @@ class Player(CircleShape):
         else:
             shot = Shot(self.position.x, self.position.y, SHOT_RADIUS)
             shot.velocity = pygame.Vector2(0,1).rotate(self.rotation) * PLAYER_SHOOT_SPEED
-            self.timer = PLAYER_SHOOT_COOLDOWN
+            self.timer = self.shoot_cooldown
+
+    def decrease_cooldown(self, amount=0.1, duration=5.0):
+        """Decrease shoot cooldown but ensure a minimum limit."""
+        self.shoot_cooldown = max(self.shoot_cooldown - amount, 0.1)  # Prevents it from being too fast
+        self.powerup_timer = duration
+
             
     def update(self, dt):
         keys = pygame.key.get_pressed()
@@ -46,6 +55,12 @@ class Player(CircleShape):
 
         
         self.timer -= dt
+
+        #powerup effect timer
+        if self.powerup_timer > 0:
+            self.powerup_timer -= dt
+            if self.powerup_timer <= 0:  # Reset cooldown after 5 seconds
+                self.shoot_cooldown = self.default_cooldown
 
     def triangle(self):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
