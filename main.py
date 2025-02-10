@@ -20,16 +20,17 @@ def main():
     drawable = pygame.sprite.Group()
     asteroids = pygame.sprite.Group()
     shots = pygame.sprite.Group()
+    particles = pygame.sprite.Group()
 
 
     Player.containers = (updatable, drawable)
     Asteroid.containers = (asteroids, updatable, drawable)
     AsteroidField.containers = (updatable,)
     Shot.containers = (shots, updatable, drawable)
+    Particle.containers = (particles, updatable, drawable)
 
     player = Player(x= SCREEN_WIDTH / 2, y= SCREEN_HEIGHT / 2)
     asteroid_field = AsteroidField()
-
 
     def score_system(screen):
         score_text = font.render(f"Score: {score}", True, (255, 255, 255))
@@ -42,6 +43,7 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
+
         updatable.update(dt)
         screen.fill(color="black")
         score_system(screen)
@@ -54,9 +56,11 @@ def main():
                     bullet.kill()
                     ast.split()
                     score += 100
-        
+                    particles.add(*Particle.spawn_particles(ast.position.x, ast.position.y))  # Add particles
+
         for obj in drawable:
             obj.draw(screen)
+
         pygame.display.flip()
         dt = clock.tick(60) / 1000
 
