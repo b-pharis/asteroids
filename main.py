@@ -50,20 +50,23 @@ def main():
         updatable.update(dt)
         screen.fill(color="black")
         score_system(screen)
+        #check if player collides with asteroid
         for ast in asteroids:
             if ast.collision(player):
                 print("Game Over!")
                 sys.exit()
+            # check if bullet collides with asteroid    
             for bullet in shots:
                 if ast.collision(bullet):
                     bullet.kill()
                     ast.split()
                     score += 100
                     particles.add(Particle.spawn_particles(ast.position.x, ast.position.y))  # Add particles
+                    #call spawn_powerup
                     powerup = Powerup.spawn_powerup(ast.position.x, ast.position.y)
                     if powerup:
                         powerups.add(Powerup.spawn_powerup(ast.position.x, ast.position.y))
-
+        #checks if player collides with powerup
         for power in powerups:
             if power.collision(player):
                 player.decrease_cooldown(0.01)
