@@ -1,28 +1,40 @@
 # this allows us to use code from
 # the open-source pygame library
 # throughout this file
-import pygame, sys
+import pygame, sys, random, math
 from asteroidfield import AsteroidField
 from constants import *
 from player import Player
 from asteroid import Asteroid
 from shots import Shot
+from particles import *
 
 def main():
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock = pygame.time.Clock()
     dt = 0
+    score = 0
+    font = pygame.font.Font(None, 36)
     updatable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
     asteroids = pygame.sprite.Group()
     shots = pygame.sprite.Group()
+
+
     Player.containers = (updatable, drawable)
     Asteroid.containers = (asteroids, updatable, drawable)
     AsteroidField.containers = (updatable,)
     Shot.containers = (shots, updatable, drawable)
+
     player = Player(x= SCREEN_WIDTH / 2, y= SCREEN_HEIGHT / 2)
     asteroid_field = AsteroidField()
+
+
+    def score_system(screen):
+        score_text = font.render(f"Score: {score}", True, (255, 255, 255))
+        screen.blit(score_text, (10, 10))  # Draw at the top-left corner
+
     print("Starting asteroids!")
     print(f"Screen width: {SCREEN_WIDTH}")
     print(f"Screen height: {SCREEN_HEIGHT}")
@@ -32,6 +44,7 @@ def main():
                 return
         updatable.update(dt)
         screen.fill(color="black")
+        score_system(screen)
         for ast in asteroids:
             if ast.collision(player):
                 print("Game Over!")
@@ -40,6 +53,7 @@ def main():
                 if ast.collision(bullet):
                     bullet.kill()
                     ast.split()
+                    score += 100
         
         for obj in drawable:
             obj.draw(screen)
