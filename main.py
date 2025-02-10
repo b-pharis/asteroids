@@ -1,7 +1,7 @@
 # this allows us to use code from
 # the open-source pygame library
 # throughout this file
-import pygame, sys, random, math
+import pygame, sys, random, math, os
 from asteroidfield import AsteroidField
 from constants import *
 from player import Player
@@ -10,12 +10,24 @@ from shots import Shot
 from particles import *
 from powerups import *
 
+
 def main():
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock = pygame.time.Clock()
     dt = 0
     score = 0
+
+    # Load the background image and scale it to fit the screen
+    background_path = os.path.join("sprites", "asteroid_background.png")  # Adjust filename if needed
+    background = pygame.image.load(background_path).convert_alpha()
+    background = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT))
+
+    # Create a transparent overlay
+    opacity = 175 # Set opacity (0-255, lower is more transparent)
+    transparent_surface = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)  
+    transparent_surface.fill((0, 0, 0, opacity))  # White with alpha
+
     font = pygame.font.Font(None, 36)
     updatable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
@@ -46,13 +58,16 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
-
+            
         updatable.update(dt)
         screen.fill(color="black")
+        screen.blit(background, (0, 0))
+        screen.blit(transparent_surface, (0, 0))  # Apply the opacity effect
         score_system(screen)
         #check if player collides with asteroid
         for ast in asteroids:
             if ast.collision(player):
+            #if ast.collision(player):
                 print("Game Over!")
                 sys.exit()
             # check if bullet collides with asteroid    

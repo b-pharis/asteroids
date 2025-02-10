@@ -3,7 +3,7 @@ from constants import *
 from circleshape import CircleShape
             
 class Asteroid(CircleShape):
-    def __init__(self, x, y, radius, num_points=6, irregularity=0.3):
+    def __init__(self, x, y, radius, num_points=20, irregularity=0.3):
         """
         Create an asteroid with a lumpy shape.
 

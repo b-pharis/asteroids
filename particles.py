@@ -1,6 +1,5 @@
 import pygame
 import random
-import math
 
 class Particle(pygame.sprite.Sprite):
     def __init__(self, x, y, color, lifetime=1.0, speed=2):
