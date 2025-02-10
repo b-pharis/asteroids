@@ -3,7 +3,7 @@ from constants import *
 from circleshape import CircleShape
             
 class Asteroid(CircleShape):
-    def __init__(self, x, y, radius, num_points=12, irregularity=0.3):
+    def __init__(self, x, y, radius, num_points=6, irregularity=0.3):
         """
         Create an asteroid with a lumpy shape.
 
@@ -31,6 +31,34 @@ class Asteroid(CircleShape):
             )
             points.append(point)
         return points
+    
+    def collision(self, other):
+        """Check if another object collides with this asteroid using polygon detection."""
+        if isinstance(other, CircleShape):  # If other object is circular (like Player or Bullets)
+            return self.point_inside_polygon(other.position, self.points)
+        
+        return False  # Default to no collision
+
+    def point_inside_polygon(self, point, polygon):
+        """Uses the Ray-Casting algorithm to determine if a point is inside the asteroid polygon."""
+        x, y = point
+        inside = False
+        n = len(polygon)
+        px, py = polygon[0]
+
+        for i in range(n + 1):
+            p2x, p2y = polygon[i % n]
+            if y > min(py, p2y):
+                if y <= max(py, p2y):
+                    if x <= max(px, p2x):
+                        if py != p2y:
+                            x_intersect = (y - py) * (p2x - px) / (p2y - py) + px
+                        if px == p2x or x <= x_intersect:
+                            inside = not inside
+            px, py = p2x, p2y
+
+        return inside
+
 
     def draw(self, screen):
         """Draw the asteroid as a jagged polygon."""
