@@ -8,6 +8,7 @@ from player import Player
 from asteroid import Asteroid
 from shots import Shot
 from particles import *
+from powerups import *
 
 def main():
     pygame.init()
@@ -21,6 +22,7 @@ def main():
     asteroids = pygame.sprite.Group()
     shots = pygame.sprite.Group()
     particles = pygame.sprite.Group()
+    powerups = pygame.sprite.Group()
 
 
     Player.containers = (updatable, drawable)
@@ -28,6 +30,7 @@ def main():
     AsteroidField.containers = (updatable,)
     Shot.containers = (shots, updatable, drawable)
     Particle.containers = (particles, updatable, drawable)
+    Powerup.containers = (powerups, updatable, drawable)
 
     player = Player(x= SCREEN_WIDTH / 2, y= SCREEN_HEIGHT / 2)
     asteroid_field = AsteroidField()
@@ -56,7 +59,14 @@ def main():
                     bullet.kill()
                     ast.split()
                     score += 100
-                    particles.add(*Particle.spawn_particles(ast.position.x, ast.position.y))  # Add particles
+                    particles.add(Particle.spawn_particles(ast.position.x, ast.position.y))  # Add particles
+                    powerup = Powerup.spawn_powerup(ast.position.x, ast.position.y)
+                    if powerup:
+                        powerups.add(Powerup.spawn_powerup(ast.position.x, ast.position.y))
+                        
+        for power in powerups:
+            if power.collision(player):
+                power.kill()
 
         for obj in drawable:
             obj.draw(screen)

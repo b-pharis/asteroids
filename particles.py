@@ -11,7 +11,7 @@ class Particle(pygame.sprite.Sprite):
             super().__init__()
         self.x = x
         self.y = y
-        self.radius = random.randint(2, 5)  # Randomize particle size
+        self.radius = random.randint(2, 4)  # Randomize particle size
         self.color = color
         self.lifetime = lifetime  # In seconds
         self.age = 0
@@ -35,10 +35,9 @@ class Particle(pygame.sprite.Sprite):
         """Draw the particle as a circle with fading effect."""
         if self.alpha > 0:
             particle_surface = pygame.Surface((self.radius * 2, self.radius * 2), pygame.SRCALPHA)
-            pygame.draw.circle(particle_surface, "white", 
+            pygame.draw.circle(particle_surface, (self.color[0], self.color[1], self.color[2], int(self.alpha)), 
                                (self.radius, self.radius), self.radius)
             surface.blit(particle_surface, (self.x - self.radius, self.y - self.radius))
-            print("Particle has been made")
 
     #@staticmethod
     def spawn_particles(x, y, color=(255, 255, 255), count=10):
