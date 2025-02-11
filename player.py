@@ -1,4 +1,4 @@
-import pygame
+import pygame, sys
 from constants import *
 from circleshape import CircleShape
 from shots import Shot
@@ -11,6 +11,9 @@ class Player(CircleShape):
         self.shoot_cooldown = PLAYER_SHOOT_COOLDOWN
         self.default_cooldown = PLAYER_SHOOT_COOLDOWN
         self.powerup_timer = 0
+        self.lives = 3  # Start with 3 lives
+        self.invincible = False
+        self.invincible_timer = 0
 
     def draw(self, screen):
         pygame.draw.polygon(screen, "white", self.triangle(), 2) 
@@ -35,8 +38,28 @@ class Player(CircleShape):
         self.shoot_cooldown = max(self.shoot_cooldown - amount, 0.1)  # Prevents it from being too fast
         self.powerup_timer = duration
 
+    def take_damage(self):
+        if not self.invincible:
+            self.lives -= 1
+            self.invincible = True
+            self.invincible_timer = 2  # 2 seconds of invincibility
+
+            if self.lives <= 0:
+                print("Game Over!")
+                sys.exit()  # End the game if out of lives
+            else:
+                self.respawn()
+
+    def respawn(self):
+        self.position = pygame.Vector2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+        self.velocity = pygame.Vector2(0, 0)
             
     def update(self, dt):
+        if self.invincible:
+            self.invincible_timer -= dt
+            if self.invincible_timer <= dt:
+                self.invincible = False
+
         keys = pygame.key.get_pressed()
         if keys[pygame.K_a]:
             self.rotate(-dt)

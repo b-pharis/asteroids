@@ -17,6 +17,7 @@ def main():
     clock = pygame.time.Clock()
     dt = 0
     score = 0
+    lives = 3
 
     # Load the background image and scale it to fit the screen
     background_path = os.path.join("sprites", "asteroid_background.png")  # Adjust filename if needed
@@ -49,7 +50,9 @@ def main():
 
     def score_system(screen):
         score_text = font.render(f"Score: {score}", True, (255, 255, 255))
+        lives_text = font.render(f"Lives: {lives}", True, (255, 255, 255))
         screen.blit(score_text, (10, 10))  # Draw at the top-left corner
+        screen.blit(lives_text, (10, 40))
 
     print("Starting asteroids!")
     print(f"Screen width: {SCREEN_WIDTH}")
@@ -67,9 +70,8 @@ def main():
         #check if player collides with asteroid
         for ast in asteroids:
             if ast.collision(player):
-            #if ast.collision(player):
-                print("Game Over!")
-                sys.exit()
+                player.take_damage()
+                lives -= 1
             # check if bullet collides with asteroid    
             for bullet in shots:
                 if ast.collision(bullet):
